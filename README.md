@@ -1,4 +1,4 @@
-[![API Regression Suite](https://github.com/Mur1masa/python-api-automation-framework/actions/workflows/tests.yml/badge.svg)](https://github.com/Mur1masa/python-api-automation-framework/actions/workflows/tests.yml)
+[![API Regression Suite](https://github.com/Murimasa/python-api-automation-framework/actions/workflows/tests.yml/badge.svg)](https://github.com/Murimasa/python-api-automation-framework/actions/workflows/tests.yml)
 # Enterprise Python API Automation Framework
 
 Scalable, production-ready API testing framework designed for regression and contract testing of RESTful microservices.
