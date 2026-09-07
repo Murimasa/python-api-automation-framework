@@ -1,4 +1,5 @@
 [![API Regression Suite](https://github.com/Murimasa/python-api-automation-framework/actions/workflows/tests.yml/badge.svg)](https://github.com/Murimasa/python-api-automation-framework/actions/workflows/tests.yml)
+[![Allure Report](https://img.shields.io/badge/Allure_Report-Live_Dashboard-success?style=flat&logo=allure)](https://Mur1masa.github.io/python-api-automation-framework/)
 # Enterprise Python API Automation Framework
 
 Scalable, production-ready API testing framework designed for regression and contract testing of RESTful microservices.
