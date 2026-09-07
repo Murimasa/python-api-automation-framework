@@ -2,9 +2,9 @@ import os
 import pytest
 import requests
 import allure
-from Core.data_generator import DataGenerator
+from core.data_generator import DataGenerator
 from dotenv import load_dotenv
-from Core.api_client import ApiClient
+from core.api_client import ApiClient
 
 # Загружаем переменные из .env файла в окружение
 load_dotenv()

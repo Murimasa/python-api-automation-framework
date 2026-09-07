@@ -2,7 +2,7 @@ import allure
 import json
 
 
-@allure.epic("Core Platform API")
+@allure.epic("core Platform API")
 @allure.feature("User Management")
 class TestUserAPI:
 

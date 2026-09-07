@@ -1,7 +1,7 @@
 import allure
 
 
-@allure.epic("Core Platform API")
+@allure.epic("core Platform API")
 @allure.feature("Automated CRUD Flow via ApiClient")
 class TestClientFlow:
 

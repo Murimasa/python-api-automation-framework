@@ -1,7 +1,7 @@
 import allure
 import requests
 
-@allure.epic("Core Platform API")
+@allure.epic("core Platform API")
 @allure.feature("Authentication & Configuration")
 def test_client_has_auth_header(base_url, authorized_client, api_token):
     """Проверяем, что URL подтянулся из .env, а клиент несет нужный Bearer-токен"""

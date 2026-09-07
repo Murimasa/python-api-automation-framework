@@ -2,7 +2,7 @@ import allure
 import pytest
 
 
-@allure.epic("Core Platform API")
+@allure.epic("core Platform API")
 @allure.feature("Negative Testing Matrix")
 class TestNegativePostCreation:
 

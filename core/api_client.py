@@ -74,3 +74,6 @@ class ApiClient:
 
     def delete(self, endpoint: str, **kwargs):
         return self._send_request("DELETE", endpoint, **kwargs)
+
+    def patch(self, endpoint: str, **kwargs):
+        return self._send_request("PATCH", endpoint, **kwargs)

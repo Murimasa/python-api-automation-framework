@@ -1,8 +1,8 @@
 import allure
-from Core.data_generator import DataGenerator
+from core.data_generator import DataGenerator
 
 
-@allure.epic("Core Platform API")
+@allure.epic("core Platform API")
 @allure.feature("Resource Lifecycle")
 class TestPostLifecycle:
 
