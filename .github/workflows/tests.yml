@@ -2,9 +2,12 @@ name: API Regression Suite
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
+
+permissions:
+  contents: write
 
 jobs:
   run-tests:
@@ -32,10 +35,26 @@ jobs:
         run: |
           pytest
 
-      - name: Upload Allure Results Artifact
-        uses: actions/upload-artifact@v4
+      - name: Get Allure History
+        uses: actions/checkout@v4
+        if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Generate Allure Report
+        uses: simple-elf/allure-report-action@master
         if: always()
         with:
-          name: allure-results
-          path: allure-results
-          retention-days: 7
+          allure_results: allure-results
+          allure_history: allure-history
+          keep_reports: 20
+
+      - name: Deploy Allure Report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
