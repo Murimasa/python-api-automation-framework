@@ -6,3 +6,8 @@ __pycache__/
 allure-results/
 allure-report/
 .idea/
+.vscode/
+
+# OS artifacts
+.DS_Store
+Thumbs.db

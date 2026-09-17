@@ -23,3 +23,36 @@ class PostPatchSchema(BaseModel):
     model_config = {
         "populate_by_name": True,
     }
+
+class GeoSchema(BaseModel):
+    lat: str
+    lng: str
+
+
+class AddressSchema(BaseModel):
+    street: str
+    suite: str
+    city: str
+    zipcode: str
+    geo: GeoSchema
+
+
+class CompanySchema(BaseModel):
+    name: str
+    catch_phrase: str = Field(alias="catchPhrase")
+    bs: str
+
+    model_config = {
+        "populate_by_name": True,
+    }
+
+
+class UserSchema(BaseModel):
+    id: int
+    name: str
+    username: str
+    email: EmailStr
+    address: AddressSchema
+    phone: str
+    website: str
+    company: CompanySchema

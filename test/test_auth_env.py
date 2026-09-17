@@ -1,51 +1,61 @@
 import allure
-import requests
 
-@allure.epic("core Platform API")
+
+@allure.epic("Core Platform API")
 @allure.feature("Authentication & Configuration")
-def test_client_has_auth_header(base_url, authorized_client, api_token):
-    """Проверяем, что URL подтянулся из .env, а клиент несет нужный Bearer-токен"""
+class TestAuthConfiguration:
 
-    with allure.step("1. Проверка переменной base_url"):
-        assert "jsonplaceholder" in base_url
+    @allure.story("Environment Variables & Session Auth")
+    @allure.severity(allure.severity_level.CRITICAL)
+    def test_client_has_auth_header(self, base_url, api_client, api_token):
+        """Verify BASE_URL and Bearer token injected into client session."""
+        with allure.step("Verify base_url matches expected environment"):
+            assert "jsonplaceholder" in base_url
 
-    with allure.step("2. Проверка заголовков авторизации в сессии"):
-        headers = authorized_client.headers
-        assert "Authorization" in headers
-        assert headers["Authorization"] == f"Bearer {api_token}"
+        with allure.step("Verify default authorization headers in active session"):
+            session_headers = api_client.session.headers
+            assert "Authorization" in session_headers
+            assert session_headers["Authorization"] == f"Bearer {api_token}"
 
-    with allure.step("3. Отправка реального запроса с токеном в заголовках"):
-        response = authorized_client.get(f"{base_url}/posts/1")
+        response = api_client.get("/posts/1")
         assert response.status_code == 200
 
-def test_out_of_token():
-    with allure.step("Check request out of token (401)"):
-        # Чистый URL без скобок и без authorized_client (токен передавать нельзя)
-        response = requests.get("https://httpbin.org/bearer")
+    @allure.story("Unauthorized Access")
+    @allure.severity(allure.severity_level.NORMAL)
+    def test_out_of_token(self, api_client):
+        """Verify 401 response without Authorization header."""
+        # Clean request without default auth headers to external validation service
+        response = api_client.get("https://httpbin.org/bearer", headers={"Authorization": None})
         assert response.status_code == 401
 
-def test_valid_token():
-    with allure.step("Check request valid token (200)"):
-        # Чистый URL со строгим заголовком
-        response = requests.get(
+    @allure.story("Valid Bearer Token")
+    @allure.severity(allure.severity_level.CRITICAL)
+    def test_valid_token(self, api_client):
+        """Verify 200 response when valid Bearer token provided."""
+        custom_token = "my_secret_token"
+        response = api_client.get(
             "https://httpbin.org/bearer",
-            headers={"Authorization": "Bearer my_secret_token"},
+            headers={"Authorization": f"Bearer {custom_token}"},
         )
         assert response.status_code == 200
-        # В ответе проверяем булево поле 'authenticated', а не несуществующий ключ 'Authorization'
         assert response.json()["authenticated"] is True
+        assert response.json()["token"] == custom_token
 
-def test_forbidden_request():
-    with allure.step("Check request forbidden (403)"):
-        # Чистый URL
-        response = requests.get("https://httpbin.org/status/403")
+    @allure.story("Forbidden Request")
+    @allure.severity(allure.severity_level.NORMAL)
+    def test_forbidden_request(self, api_client):
+        """Verify 403 Forbidden status response."""
+        response = api_client.get("https://httpbin.org/status/403")
         assert response.status_code == 403
 
-def test_invalid_token_rejected():
-    with allure.step("Check request rejected (200)"):
-        response = requests.get(
+    @allure.story("Mock Token Echo")
+    @allure.severity(allure.severity_level.MINOR)
+    def test_token_echo_validation(self, api_client):
+        """Verify httpbin reflects supplied Bearer token back in payload."""
+        arbitrary_token = "totally_wrong_secret"
+        response = api_client.get(
             "https://httpbin.org/bearer",
-            headers={"Authorization": "Bearer totally_wrong_secret"},
+            headers={"Authorization": f"Bearer {arbitrary_token}"},
         )
         assert response.status_code == 200
-        assert response.json()["token"] == "totally_wrong_secret"
+        assert response.json()["token"] == arbitrary_token

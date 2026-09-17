@@ -1,31 +1,31 @@
 import allure
+
 from core.data_generator import DataGenerator
+from core.schemas import PostPatchSchema
 
 
-@allure.epic("core Platform API")
+@allure.epic("Core Platform API")
 @allure.feature("Resource Lifecycle")
 class TestPostLifecycle:
 
-    def test_update_existing_post(self, custom_api, created_post):
-        """Проверяем PUT-запрос к существующему ресурсу."""
+    def test_update_existing_post(self, api_client, created_post):
+        """Verify updating an existing resource via PUT request."""
         update_payload = DataGenerator.generate_post_data()
 
-        # JSONPlaceholder не сохраняет id 101 в память, поэтому для PUT берем существующий id 1
+        # Mock API does not persist new IDs in memory, so we target stable ID 1
         target_id = 1
 
-        with allure.step(f"Обновление поста с ID {target_id}"):
-            response = custom_api.put(f"/posts/{target_id}", json=update_payload)
-            assert response.status_code == 200
+        response = api_client.put(f"/posts/{target_id}", json=update_payload)
+        assert response.status_code == 200
 
-            data = response.json()
-            assert data["title"] == update_payload["title"]
-            assert data["body"] == update_payload["body"]
+        updated_post = PostPatchSchema.model_validate(response.json())
+        assert updated_post.title == update_payload["title"]
+        assert updated_post.body == update_payload["body"]
 
-    def test_read_existing_post(self, custom_api, created_post):
-        """Проверяем чтение сущности, созданной на этапе Setup."""
+    def test_read_existing_post(self, api_client, created_post):
+        """Attempt reading an entity created during setup phase."""
         post_id = created_post["id"]
 
-        with allure.step(f"Попытка чтения только что созданного поста {post_id}"):
-            response = custom_api.get(f"/posts/{post_id}")
-            # Мок не сохраняет запись физически, поэтому ожидаем 404
-            assert response.status_code == 404
+        response = api_client.get(f"/posts/{post_id}")
+        # Mock API does not persist records physically, so 404 is expected
+        assert response.status_code == 404

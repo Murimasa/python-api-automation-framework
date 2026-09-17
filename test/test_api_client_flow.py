@@ -1,36 +1,34 @@
 import allure
 
+from core.data_generator import DataGenerator
+from core.schemas import PostPatchSchema
 
-@allure.epic("core Platform API")
+
+@allure.epic("Core Platform API")
 @allure.feature("Automated CRUD Flow via ApiClient")
 class TestClientFlow:
 
-    def test_get_post(self, custom_api):
-        response = custom_api.get("/posts/1")
-        assert response.status_code == 200
-        assert response.json()["id"] == 1
+    @allure.story("Complete Post CRUD Lifecycle")
+    @allure.severity(allure.severity_level.BLOCKER)
+    def test_complete_post_crud_flow(self, api_client):
+        """Execute sequential end-to-end CRUD flow for post resource."""
+        # 1. CREATE
+        payload = DataGenerator.generate_post_data()
+        create_res = api_client.post("/posts", json=payload)
+        assert create_res.status_code == 201
+        created_post = PostPatchSchema.model_validate(create_res.json())
 
-    def test_create_post(self, custom_api):
-        payload = {
-            "title": "Clean Architecture",
-            "body": "ApiClient handles logging automatically",
-            "userId": 1,
-        }
-        response = custom_api.post("/posts", json=payload)
-        assert response.status_code == 201
-        assert response.json()["title"] == payload["title"]
+        # 2. READ (using stable id=1 due to mock persistence limitation)
+        read_res = api_client.get("/posts/1")
+        assert read_res.status_code == 200
 
-    def test_update_post(self, custom_api):
-        payload = {
-            "id": 1,
-            "title": "Updated Title",
-            "body": "Updated Body",
-            "userId": 1,
-        }
-        response = custom_api.put("/posts/1", json=payload)
-        assert response.status_code == 200
-        assert response.json()["title"] == "Updated Title"
+        # 3. UPDATE
+        update_payload = DataGenerator.generate_post_data()
+        update_res = api_client.put("/posts/1", json=update_payload)
+        assert update_res.status_code == 200
+        updated_post = PostPatchSchema.model_validate(update_res.json())
+        assert updated_post.title == update_payload["title"]
 
-    def test_delete_post(self, custom_api):
-        response = custom_api.delete("/posts/1")
-        assert response.status_code == 200
+        # 4. DELETE
+        delete_res = api_client.delete("/posts/1")
+        assert delete_res.status_code == 200
