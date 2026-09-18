@@ -2,6 +2,7 @@
 .env
 __pycache__/
 *.pyc
+*.db
 .pytest_cache/
 allure-results/
 allure-report/

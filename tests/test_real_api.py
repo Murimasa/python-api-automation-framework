@@ -24,7 +24,7 @@ def test_user_not_found(api_client):
 @allure.feature("Users Management")
 @allure.story("Create User")
 def test_create_new_user(api_client):
-    """Create a new user using dynamic test data."""
+    """Create a new user using dynamic tests data."""
     payload = DataGenerator.generate_user_data()
 
     response = api_client.post("/users", json=payload)

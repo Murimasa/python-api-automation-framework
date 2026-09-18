@@ -28,7 +28,7 @@ Scalable, production-ready API testing framework designed for regression and con
 ```text
 ├── .github/workflows/     # CI/CD automation pipelines
 ├── core/                  # Core framework modules (ApiClient, Data Factories)
-├── test/                 # Functional, contract, and lifecycle test suites
+├── tests/                 # Functional, contract, and lifecycle test suites
 ├── .env                   # Local environment configuration (git-ignored)
 ├── .gitignore             # Git exclusion rules
 ├── conftest.py            # Global fixtures and session lifecycle

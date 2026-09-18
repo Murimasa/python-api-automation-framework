@@ -21,7 +21,7 @@ def response_to_curl(response: requests.Response) -> str:
 
 
 def attach_http_exchange(response: requests.Response) -> None:
-    """Attach cURL command and response payload to the active Allure step/test."""
+    """Attach cURL command and response payload to the active Allure step/tests."""
     method = response.request.method
     url_path = response.request.path_url
     status_code = response.status_code
